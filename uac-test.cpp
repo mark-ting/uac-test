@@ -6,20 +6,25 @@
 
 int main(int argc, char** argv)
 {
+	static int cycle_max = 1000000;  // let's keep this sane for now...
+	
 	int uac;       // UAC class
     int module;    // CD module equipped? (assumes Rank 5: 12%)
     int fastfire;  // Fast Fire unlocked? (5%)
+    int cycles;    // Number of weapon cycles (aka rounds/volleys)
      
-    if (argc == 4) {
+    if (argc == 5) {
         uac = strtol(argv[1], NULL, 10);
         module = strtol(argv[2], NULL, 10);
         fastfire = strtol(argv[3], NULL, 10);
-    } else {
-		std::cout << "Usage: uac-test [uac] [module] [fastfire]" << std::endl;
+    	cycles = strtol(argv[4], NULL, 10);
+	} else {
+		std::cout << "Usage: uac-test [uac] [module] [fastfire] [cycles]" << std::endl;
 		std::cout << "Valid Args:" << std::endl;
 		std::cout << "     [uac]: 2 | 5 | 10 | 20" << std::endl;
 		std::cout << "  [module]: 0 | 1" << std::endl;		
 		std::cout << "[fastfire]: 0 | 1" << std::endl;
+		std::cout << "  [cycles]: between 1 and " << cycle_max << std::endl;
 	}
 	
 	// Validate UAC selection
@@ -39,6 +44,13 @@ int main(int argc, char** argv)
 		std::cout << "Error: [fastfire] flag invalid!" << std::endl;
 		return 3;
 	}
+	
+	// Validate cycles
+	if (cycles < 1 || cycles > cycle_max) {
+		std::cout << "Error: number of [cycles] must be between 1 and " << cycle_max << std::endl;
+		return 4;
+	}
+	
 	
 	// Format: Weapon (Name, Damage, Cooldown, JamChance);
 	std::tuple<std::string, int, float, float> selected;
@@ -65,8 +77,10 @@ int main(int argc, char** argv)
 	}
 	
 	int damage = std::get<1> (selected);
-	double jam_chance = std::get<3> (selected); // use 0 for maximum double-tap rngesus power TROLOLOL ayyylmao
-	
+	double jam_chance = std::get<3> (selected);
+
+
+	// Cooldown calculations
 	double modifier = 0.0;
 	
 	if (module) {
@@ -79,18 +93,17 @@ int main(int argc, char** argv)
 	
 	double cooldown = (std::get<2> (selected)) * (1 - modifier);
 	
-	// Firing Cycles (Rounds/Volleys)
-	// ProTip: Pick a large number so that DPS converges and you can excel graph it all pretty-like
-	int loop_max = 5000;
-	
+	// RNG initialization
 	std::default_random_engine rand;
 	std::uniform_real_distribution<double> dist(0.0, 1.0);
+	double jam_test;  // variable to test against jam_chance
 	
 	double damage_dealt = 0.0;
 	double time_elapsed = 0.0;
 
+	// Tracking variables
 	bool stop = false;
-	int loop = 0;
+	int current_cycle = 0;
 	
 	std::ofstream logfile;
 	std::string name;
@@ -105,13 +118,14 @@ int main(int argc, char** argv)
 	}
 	
 	if (fastfire) {
-		name += " FF";
+		name += " FF ";
 	} else {
-		name += " noFF";
+		name += " noFF ";
 	}
 	
+	name += std::to_string(cycles);
 	name += ".csv";
-
+	
 	logfile.open(name);
 	logfile << "time,damage,dps" << std::endl;
 	
@@ -121,29 +135,26 @@ int main(int argc, char** argv)
 		logfile << time_elapsed << "," << damage_dealt << "," << (damage_dealt / time_elapsed) << std::endl;
 		
 		damage_dealt += damage;
-		
-		double jam_test;
 		jam_test = dist(rand);
 		
 		if (jam_test > jam_chance) {
+			// Success
 			damage_dealt += damage;
-			std::cout << "Double Tap!" << std::endl;
 		} else {
-			// JAMMED!
-			// add 5 seconds to time before next cycle
+			// Jammed: add 5 seconds to time before next cycle
 			time_elapsed += 5.0;
-			std::cout << "Jammed!" << std::endl;
 		}
 		
-		// cycle weapon
+		// Cycle weapon
 		time_elapsed += cooldown;
 		
-		if (loop == loop_max) {
+		if (current_cycle >= cycles) {
 			stop = true;
 		} else {
-			loop++;
+			current_cycle++;
 		}
 	}
 	
+	std::cout << "Data saved to: " << name << std::endl;
 	logfile.close();	
 }
