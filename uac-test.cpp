@@ -6,12 +6,12 @@
 
 int main(int argc, char** argv)
 {
-	static int cycle_max = 1000000;  // let's keep this sane for now...
+    static int cycle_max = 1000000;  // let's keep this sane for now...
 	
-	int uac;       // UAC class
+    int uac;       // UAC class
     int module;    // CD module equipped? (assumes Rank 5: 12%)
     int fastfire;  // Fast Fire unlocked? (5%)
-    int cycles;    // Number of weapon cycles (aka rounds/volleys)
+    int cycles;    // Number of double-tap cycles
      
     if (argc == 5) {
         uac = strtol(argv[1], NULL, 10);
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 	std::ofstream logfile;
 	std::string name;
 	
-	// Naming Format "UAC## MOD FF.csv"
+	// Naming format: "UAC## MOD FF.csv"
 	name = std::get<0> (selected);
 	
 	if (module) {
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 	logfile.open(name);
 	logfile << "time,damage,dps" << std::endl;
 	
-	// Main Firing logic loop
+	// Main firing logic loop
 	while (!stop)
 	{
 		logfile << time_elapsed << "," << damage_dealt << "," << (damage_dealt / time_elapsed) << std::endl;
@@ -156,5 +156,7 @@ int main(int argc, char** argv)
 	}
 	
 	std::cout << "Data saved to: " << name << std::endl;
-	logfile.close();	
+	logfile.close();
+	
+	return 0;
 }
