@@ -21,7 +21,9 @@ Module: is the cooldown module equipped or not? (Note: UAC2 technically shouldn'
 
 Fast Fire: is the Fast Fire skill unlocked or not?
 
-Cycles: for IS UAC5, number of rounds, for Clan UACs, number of cycles (UAC20 -> 4 shots = 1 cycle)
+Cycles: number of attempted double-tap cycles.
+
+(Total damage should be at least Cycles * Damage and no greater than 2 * Cycles * Damage.)
 
 ### Output: ###
 Outputs a file named in such a manner:
