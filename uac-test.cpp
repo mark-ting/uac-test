@@ -100,10 +100,6 @@ int main(int argc, char** argv)
 	
 	double damage_dealt = 0.0;
 	double time_elapsed = 0.0;
-
-	// Tracking variables
-	bool stop = false;
-	int current_cycle = 0;
 	
 	std::ofstream logfile;
 	std::string name;
@@ -130,7 +126,7 @@ int main(int argc, char** argv)
 	logfile << "time,damage,dps" << std::endl;
 	
 	// Main firing logic loop
-	while (!stop)
+	for (int cycle = 0; cycle < cycles; cycle++)
 	{
 		logfile << time_elapsed << "," << damage_dealt << "," << (damage_dealt / time_elapsed) << std::endl;
 		
@@ -147,12 +143,6 @@ int main(int argc, char** argv)
 		
 		// Cycle weapon
 		time_elapsed += cooldown;
-		
-		if (current_cycle >= cycles) {
-			stop = true;
-		} else {
-			current_cycle++;
-		}
 	}
 	
 	std::cout << "Data saved to: " << name << std::endl;
