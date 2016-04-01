@@ -1,7 +1,7 @@
 # uac-test#
-uac-test is a simple, no-frills* command line utility to test DPS for Ultra Autocannons (UACs) in PGI's MechWarrior Online.
+uac-test is a simple, no-frills* command-line utility to test DPS for Ultra Autocannons (UACs) in PGI's MechWarrior Online.
 
-*Sorry, I wish it could make you a sandwich, but `sudo`err, I mean `Run as administrator`can only do so much.
+*Sorry, I wish it could make you a sandwich, but `sudo` err, I mean `Run as administrator` can only do so much.
 
 ## Application Usage: ##
     uac-test [uactype] [module] [fastfire] [cycles]
@@ -35,8 +35,8 @@ Example:
     UAC2 noMod FF 100.csv
 
 ##System Requirements##
-* Windows 7 or later (command line yo!)
+* Windows 7 or later
 * Python 3 (for script only)
 
 ##Additional Notes##
-This project is only meant to be a fun exercise in code (and marginally useful for proving theorycrafting shenanigans) and is intended to be superseded by a GUI version. (Link will be here when available!)
+This project is only meant to be a fun exercise in code (and marginally useful for proving theorycrafting shenanigans) and is intended to be superseded by a [GUI version](https://github.com/mat3049/uac-test-gui).
